@@ -24,7 +24,7 @@
               2 items left
               <b-field class="is-pulled-right">
                 <b-radio-button v-model="radioButton" native-value="all">
-                  All (0)
+                  All (3)
                 </b-radio-button>
                 <b-radio-button v-model="radioButton" native-value="active">
                   Active (0)
