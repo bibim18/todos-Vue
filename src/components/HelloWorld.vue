@@ -7,30 +7,52 @@
             <b-input placeholder="enter anything..."
               type="text"
               icon="check"
-              size="is-large">
+              size="is-large"
+              @keyup.native.enter="addTodos"
+              v-model="todo">
             </b-input>
           </b-field>
-          <b-field class="is-pulled-left">
-            <b-checkbox size="is-large">test</b-checkbox>
-          </b-field>
-          <a class="delete is-pulled-right"></a>
-          <div class="is-clearfix"></div>
+          <div v-for="(a, index) in todos" :key="a.title" v-if="radioButton === all">
+            <b-field class="is-pulled-left">
+              <b-checkbox v-if="a.completed === true" size="is-large" @input="changeToComplete(index, $event)"><strike>{{a.title}}</strike></b-checkbox>
+              <b-checkbox v-if="a.completed === false" size="is-large" @input="changeToComplete(index, $event)">{{a.title}}</b-checkbox>
+            </b-field>
+            <a class="delete is-pulled-right is-large" @click="deleteTodos(index)"></a>
+            <div class="is-clearfix"></div>
+          </div>
+          <div v-for="(a, index) in todos" :key="a.title" v-if="radioButton === active">
+            <b-field class="is-pulled-left">
+              <b-checkbox v-if="a.completed === true" size="is-large" @input="changeToComplete(index, $event)"><strike>{{a.title}}</strike></b-checkbox>
+              <b-checkbox v-if="a.completed === false" size="is-large" @input="changeToComplete(index, $event)">{{a.title}}</b-checkbox>
+            </b-field>
+            <a class="delete is-pulled-right is-large" @click="deleteTodos(index)"></a>
+            <div class="is-clearfix"></div>
+          </div>
+          <div v-for="(a, index) in todos" :key="a.title" v-if="radioButton === completed">
+            <b-field class="is-pulled-left">
+              <b-checkbox v-if="a.completed === true" size="is-large" @input="changeToComplete(index, $event)"><strike>{{a.title}}</strike></b-checkbox>
+              <b-checkbox v-if="a.completed === false" size="is-large" @input="changeToComplete(index, $event)">{{a.title}}</b-checkbox>
+            </b-field>
+            <a class="delete is-pulled-right is-large" @click="deleteTodos(index)"></a>
+            <div class="is-clearfix"></div>
+          </div>
           <hr>
-          <button class="button is-danger is-outlined is-pulled-right">clear</button>
+          <button class="button is-danger is-outlined is-pulled-right" @click="clearCompleted">clear</button>
           <br>
           <br>
           <div>
+            {{radioButton}}
             <section>
-              2 items left
+              {{todos.length}} items left
               <b-field class="is-pulled-right">
-                <b-radio-button v-model="radioButton" native-value="all">
-                  All (3)
+                <b-radio-button v-model="radioButton" native-value="all" @click="changeShowDisplay()">
+                  All ({{all}})
                 </b-radio-button>
-                <b-radio-button v-model="radioButton" native-value="active">
-                  Active (0)
+                <b-radio-button v-model="radioButton" native-value="active" @click="changeShowDisplay()">
+                  Active ({{active}})
                 </b-radio-button>
-                <b-radio-button v-model="radioButton" native-value="completed">
-                  Completed (0)
+                <b-radio-button v-model="radioButton" native-value="completed" @click="changeShowDisplay()">
+                  Completed ({{completedTodos}})
                 </b-radio-button>
               </b-field>
             </section>
@@ -46,7 +68,48 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      radioButton: ''
+      radioButton: 'all',
+      todo: '',
+      todos: []
+    }
+  },
+  methods: {
+    addTodos () {
+      this.todos.push({
+        title: this.todo,
+        completed: false
+      })
+      this.todo = ''
+    },
+    deleteTodos (index) {
+      this.todos.splice(index, 1)
+    },
+    changeToComplete (index, event) {
+      this.todos[index].completed = event
+    },
+    clearCompleted () {
+      for (var i = this.todos.length - 1; i >= 0; i--) {
+        if (this.todos[i].completed === true) {
+          this.todos.splice(i, 1)
+        }
+      }
+    }
+  },
+  computed: {
+    all () {
+      return this.todos.length
+    },
+    active () {
+      var count = 0
+      for (var i = this.todos.length - 1; i >= 0; i--) {
+        if (this.todos[i].completed === false) {
+          count++
+        }
+      }
+      return count
+    },
+    completedTodos () {
+      return this.todos.filter(todo => todo.completed === true).length
     }
   }
 }
