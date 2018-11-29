@@ -12,36 +12,33 @@
               v-model="todo">
             </b-input>
           </b-field>
-          <div v-for="(a, index) in todos" :key="a.title" v-if="radioButton === all">
+          <div v-for="(a, index) in todos" :key="index" v-if="radioButton === 'all'">
             <b-field class="is-pulled-left">
-              <b-checkbox v-if="a.completed === true" size="is-large" @input="changeToComplete(index, $event)"><strike>{{a.title}}</strike></b-checkbox>
+              <b-checkbox :value="true" v-if="a.completed === true" size="is-large" @input="changeToComplete(index, $event)"><strike>{{a.title}}</strike></b-checkbox>
               <b-checkbox v-if="a.completed === false" size="is-large" @input="changeToComplete(index, $event)">{{a.title}}</b-checkbox>
             </b-field>
             <a class="delete is-pulled-right is-large" @click="deleteTodos(index)"></a>
             <div class="is-clearfix"></div>
           </div>
-          <div v-for="(a, index) in todos" :key="a.title" v-if="radioButton === active">
+          <div v-for="(a, index) in todos" :key="index" v-if="radioButton === 'active' && a.completed === false">
             <b-field class="is-pulled-left">
-              <b-checkbox v-if="a.completed === true" size="is-large" @input="changeToComplete(index, $event)"><strike>{{a.title}}</strike></b-checkbox>
-              <b-checkbox v-if="a.completed === false" size="is-large" @input="changeToComplete(index, $event)">{{a.title}}</b-checkbox>
+              <b-checkbox size="is-large" @input="changeToComplete(index, $event)">{{a.title}}</b-checkbox>
             </b-field>
             <a class="delete is-pulled-right is-large" @click="deleteTodos(index)"></a>
             <div class="is-clearfix"></div>
           </div>
-          <div v-for="(a, index) in todos" :key="a.title" v-if="radioButton === completed">
+          <div v-for="(a, index) in todos" :key="index" v-if="radioButton === 'completed' && a.completed === true">
             <b-field class="is-pulled-left">
-              <b-checkbox v-if="a.completed === true" size="is-large" @input="changeToComplete(index, $event)"><strike>{{a.title}}</strike></b-checkbox>
-              <b-checkbox v-if="a.completed === false" size="is-large" @input="changeToComplete(index, $event)">{{a.title}}</b-checkbox>
+              <b-checkbox :value="true" size="is-large" @input="changeToComplete(index, $event)"><strike>{{a.title}}</strike></b-checkbox>
             </b-field>
             <a class="delete is-pulled-right is-large" @click="deleteTodos(index)"></a>
             <div class="is-clearfix"></div>
           </div>
           <hr>
-          <button class="button is-danger is-outlined is-pulled-right" @click="clearCompleted">clear</button>
+          <button class="button is-danger is-outlined is-pulled-right" @click="clearCompleted()">clear</button>
           <br>
           <br>
           <div>
-            {{radioButton}}
             <section>
               {{todos.length}} items left
               <b-field class="is-pulled-right">
@@ -85,6 +82,7 @@ export default {
       this.todos.splice(index, 1)
     },
     changeToComplete (index, event) {
+      console.log(event)
       this.todos[index].completed = event
     },
     clearCompleted () {
